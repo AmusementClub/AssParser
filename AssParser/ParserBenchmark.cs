@@ -14,16 +14,10 @@ namespace AssParser
     [RPlotExporter]
     public class ParserBenchmark
     {
-        AssParser.Lib.AssParser AssParser;
-        [GlobalSetup]
-        public void Setup()
-        {
-            AssParser = new ();
-        }
         [Benchmark]
-        public void ParserBenchmark2()
+        public void ParserBenchmarkTest()
         {
-            AssParser.ParseAssFile2(@"[Nekomoe kissaten&VCB-Studio] Cider no You ni Kotoba ga Wakiagaru [Ma10p_1080p][x265_flac].jp&sc.ass").Wait();
+            Lib.AssParser.ParseAssFile(@"[Nekomoe kissaten&VCB-Studio] Cider no You ni Kotoba ga Wakiagaru [Ma10p_1080p][x265_flac].jp&sc.ass").Wait();
         }
     }
 }

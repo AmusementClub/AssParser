@@ -24,7 +24,7 @@ namespace AssParser.Lib
             }
         }
 
-        public async Task<AssSubtitleModel> ParseAssFile2(string assFile)
+        public static async Task<AssSubtitleModel> ParseAssFile(string assFile)
         {
             using StreamReader assfile = new(File.Open(assFile, FileMode.Open));
             AssSubtitleModel assSubtitleModel = new();
