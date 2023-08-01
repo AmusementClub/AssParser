@@ -1,14 +1,8 @@
-﻿using BenchmarkDotNet.Attributes;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
-namespace AssParser
+namespace AssParser.Lib
 {
-    public class AssParser2
+    public class AssParser
     {
         static async Task<(string header, string body)> ParseLine(StreamReader streamReader)
         {

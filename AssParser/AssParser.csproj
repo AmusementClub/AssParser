@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AssParser.Lib\AssParser.Lib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="[Nekomoe kissaten&amp;VCB-Studio] Cider no You ni Kotoba ga Wakiagaru [Ma10p_1080p][x265_flac].jp&amp;sc.ass">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
