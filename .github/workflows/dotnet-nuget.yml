@@ -1,0 +1,41 @@
+name: Publish to nuget
+
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        configuration: [ Release ]
+        runtime-identifier: [ 'win-x64', 'win-arm64', 'linux-x64' ]
+
+    runs-on: ubuntu-latest 
+
+    steps:
+    - name: Set env
+      run:  echo "RELEASE_VERSION=$(echo ${GITHUB_REF#refs/*/} | grep -Po "(?<=^v).*")" >> $GITHUB_ENV
+    - name: Test
+      run: |
+        echo $RELEASE_VERSION
+        echo ${{ env.RELEASE_VERSION }}
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.x
+
+    - name: Publish the application
+      run: dotnet pack AssParser.Lib --configuration ${{ matrix.configuration }} -p:PackageVersion=$RELEASE_VERSION
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: AssParser.Lib.$RELEASE_VERSION.nupkg
+        path: |
+          OKP.Core/bin/${{ matrix.configuration }}/net7.0/*
