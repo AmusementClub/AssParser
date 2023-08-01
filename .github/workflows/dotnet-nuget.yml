@@ -38,3 +38,6 @@ jobs:
         name: AssParser.Lib.$RELEASE_VERSION.nupkg
         path: |
           AssParser.Lib/bin/${{ matrix.configuration }}/*
+          
+    - name: Publish to Nuget
+      run: dotnet nuget push AssParser.Lib/bin/${{ matrix.configuration }}/AssParser.Lib.$RELEASE_VERSION.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source https://api.nuget.org/v3/index.json
