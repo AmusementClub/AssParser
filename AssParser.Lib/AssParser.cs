@@ -178,7 +178,7 @@ namespace AssParser.Lib
                             style.ScaleX = data[i];
                             break;
                         case "ScaleY":
-                            style.Fontname = data[i];
+                            style.ScaleY = data[i];
                             break;
                         case "Spacing":
                             style.Spacing = data[i];

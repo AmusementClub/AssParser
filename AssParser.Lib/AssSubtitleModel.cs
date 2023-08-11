@@ -73,4 +73,10 @@
         Comment,
         Dialogue
     }
+
+    public class FontDetail
+    {
+        public string FontName;
+        public string UsedChar;
+    }
 }
