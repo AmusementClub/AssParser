@@ -41,14 +41,14 @@ namespace AssParser.Lib
                     var word = NonWord.Replace(text, "");
                     if (word.Length > 0)
                     {
-                        var isBold = currentStyle.Bold != "0";
+                        var bold = Convert.ToInt32(currentStyle.Bold);
                         var isItalic = currentStyle.Italic != "0";
-                        result.TryAdd(currentStyle.Fontname + (isBold ? "_Bold" : "") + (isItalic ? "_Italic" : ""), new());
+                        result.TryAdd(currentStyle.Fontname + (bold > 0 ? "_Bold" + bold : "") + (isItalic ? "_Italic" : ""), new());
                         words.Add(new()
                         {
                             FontName = currentStyle.Fontname,
                             UsedChar = word,
-                            IsBold = isBold,
+                            Bold = bold,
                             IsItalic = isItalic
                         });
                     }
@@ -112,14 +112,14 @@ namespace AssParser.Lib
                             var word = NonWord.Replace(spRight[1], "");
                             if (word.Length > 0)
                             {
-                                var isBold = currentStyle.Bold != "0";
+                                var bold = Convert.ToInt32(currentStyle.Bold);
                                 var isItalic = currentStyle.Italic != "0";
-                                result.TryAdd(currentStyle.Fontname + (isBold ? "_Bold" : "") + (isItalic ? "_Italic" : ""), new());
+                                result.TryAdd(currentStyle.Fontname + (bold > 0 ? "_Bold" + bold : "") + (isItalic ? "_Italic" : ""), new());
                                 words.Add(new()
                                 {
                                     FontName = currentStyle.Fontname,
                                     UsedChar = word,
-                                    IsBold = isBold,
+                                    Bold = bold,
                                     IsItalic = isItalic
                                 });
                             }
@@ -131,7 +131,7 @@ namespace AssParser.Lib
             {
                 foreach (var s in w.UsedChar)
                 {
-                    result[w.FontName + (w.IsBold ? "_Bold" : "") + (w.IsItalic ? "_Italic" : "")].Add(s);
+                    result[w.FontName + (w.Bold > 0 ? "_Bold" + w.Bold : "") + (w.IsItalic ? "_Italic" : "")].Add(s);
                 }
             }
             var fonts = new FontDetail[result.Count];
