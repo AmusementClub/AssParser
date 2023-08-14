@@ -78,9 +78,12 @@ namespace AssParser.Lib
                                     }
                                     break;
                                 case 'b':
-                                    if (t.Length > 1)
+                                    if (t.Length == 2 || t.Length == 4)
                                     {
-                                        currentStyle.Bold = t[1..];
+                                        if (int.TryParse(t[1..], out var weight))
+                                        {
+                                            currentStyle.Bold = weight.ToString();
+                                        }
                                     }
                                     break;
                                 case 'i':
