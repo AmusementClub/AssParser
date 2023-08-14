@@ -16,17 +16,16 @@ namespace AssParser.Lib
         {
             ConcurrentDictionary<string, HashSet<char>> result = new();
             BlockingCollection<FontDetail> words = new();
-            Dictionary<string, string> styles = new();
+            Dictionary<string, Style> styles = new();
             foreach (var style in assSubtitle.styles.styles)
             {
-                styles.TryAdd(style.Name, style.Fontname);
+                styles.TryAdd(style.Name, style);
             }
             Parallel.ForEach(assSubtitle.events.events, item =>
             {
-                var curStyle = item.Style;
                 var spLeft = item.Text.Split('{').ToList();
-                Regex FsReg = FsRegFactory();
                 Regex NonWord = NonWordFactory();
+                var currentStyle = styles[item.Style];
                 if (!item.Text.StartsWith("{"))
                 {
                     string text;
@@ -42,8 +41,16 @@ namespace AssParser.Lib
                     var word = NonWord.Replace(text, "");
                     if (word.Length > 0)
                     {
-                        result.TryAdd(styles[item.Style], new());
-                        words.Add(new() { FontName = styles[item.Style], UsedChar = word });
+                        var isBold = currentStyle.Bold != "0";
+                        var isItalic = currentStyle.Italic != "0";
+                        result.TryAdd(currentStyle.Fontname + (isBold ? "_Bold" : "") + (isItalic ? "_Italic" : ""), new());
+                        words.Add(new()
+                        {
+                            FontName = currentStyle.Fontname,
+                            UsedChar = word,
+                            IsBold = isBold,
+                            IsItalic = isItalic
+                        });
                     }
                 }
                 if (spLeft == null)
@@ -53,37 +60,78 @@ namespace AssParser.Lib
                 foreach (var s in spLeft)
                 {
                     var spRight = s.Split('}');
-                    string font;
                     if (spRight.Length > 0)
                     {
-                        var match = FsReg.Matches(spRight[0]);
-                        if (match.Count > 0)
+                        var tags = spRight[0].Split("\\");
+                        foreach (var t in tags)
                         {
-                            var mat = match.Last();
-                            font = mat.Groups[1].Value;
-                        }
-                        else
-                        {
-                            font = styles[item.Style];
+                            if (t.Length == 0)
+                            {
+                                continue;
+                            }
+                            switch (t[0])
+                            {
+                                case 'f':
+                                    if (t.Length > 2 && t[1] == 'n')
+                                    {
+                                        currentStyle.Fontname = t[2..];
+                                    }
+                                    break;
+                                case 'b':
+                                    if (t.Length > 1)
+                                    {
+                                        currentStyle.Bold = t[1..];
+                                    }
+                                    break;
+                                case 'i':
+                                    if (t.Length == 2)
+                                    {
+                                        currentStyle.Italic = t[1..];
+                                    }
+                                    break;
+                                case 'r':
+                                    if (t.Length == 1)
+                                    {
+                                        currentStyle = styles[item.Style];
+                                    }
+                                    else if (t.Length > 1)
+                                    {
+                                        if (!styles.ContainsKey(t[1..]))
+                                        {
+                                            throw new Exception($"Style {t} not found");
+                                        }
+                                        currentStyle = styles[t[1..]];
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
                         if (spRight.Length > 1)
                         {
                             var word = NonWord.Replace(spRight[1], "");
                             if (word.Length > 0)
                             {
-                                result.TryAdd(font, new());
-                                words.Add(new() { FontName = font, UsedChar = word });
+                                var isBold = currentStyle.Bold != "0";
+                                var isItalic = currentStyle.Italic != "0";
+                                result.TryAdd(currentStyle.Fontname + (isBold ? "_Bold" : "") + (isItalic ? "_Italic" : ""), new());
+                                words.Add(new()
+                                {
+                                    FontName = currentStyle.Fontname,
+                                    UsedChar = word,
+                                    IsBold = isBold,
+                                    IsItalic = isItalic
+                                });
                             }
                         }
                     }
-
                 }
             });
             foreach (var w in words)
             {
                 foreach (var s in w.UsedChar)
                 {
-                    result[w.FontName].Add(s);
+                    result[w.FontName + (w.IsBold ? "_Bold" : "") + (w.IsItalic ? "_Italic" : "")].Add(s);
                 }
             }
             var fonts = new FontDetail[result.Count];
@@ -103,8 +151,6 @@ namespace AssParser.Lib
             }
             return fonts;
         }
-        [GeneratedRegex("\\\\fn([^\\\\]+)", RegexOptions.Compiled)]
-        private static partial Regex FsRegFactory();
         [GeneratedRegex("\\s|(\\\\n)|(\\\\N)|(\\\\h)")]
         private static partial Regex NonWordFactory();
     }

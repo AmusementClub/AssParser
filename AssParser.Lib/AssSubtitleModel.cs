@@ -78,5 +78,7 @@
     {
         public string FontName;
         public string UsedChar;
+        public bool IsBold;
+        public bool IsItalic;
     }
 }
