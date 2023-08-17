@@ -14,7 +14,7 @@ namespace AssParser.Lib
     {
         public static FontDetail[] UsedFonts(this AssSubtitleModel assSubtitle)
         {
-            ConcurrentDictionary<string, HashSet<char>> result = new();
+            ConcurrentDictionary<string, ConcurrentDictionary<char, byte>> result = new();
             BlockingCollection<FontDetail> words = new();
             Dictionary<string, Style> styles = new();
             foreach (var style in assSubtitle.styles.styles)
@@ -126,16 +126,17 @@ namespace AssParser.Lib
                                 });
                             }
                         }
+
                     }
                 }
             });
-            foreach (var w in words)
+            Parallel.ForEach(words, word =>
             {
-                foreach (var s in w.UsedChar)
+                foreach (var s in word.UsedChar)
                 {
-                    result[w.FontName + (w.Bold > 0 ? "_Bold" + w.Bold : "") + (w.IsItalic ? "_Italic" : "")].Add(s);
+                    result[word.FontName + (word.Bold > 0 ? "_Bold" + word.Bold : "") + (word.IsItalic ? "_Italic" : "")].TryAdd(s, 0);
                 }
-            }
+            });
             var fonts = new FontDetail[result.Count];
             int i = 0;
             foreach (var s in result)
