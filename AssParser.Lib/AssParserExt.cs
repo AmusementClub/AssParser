@@ -24,7 +24,6 @@ namespace AssParser.Lib
             Parallel.ForEach(assSubtitle.events.events, item =>
             {
                 var spLeft = item.Text.Split('{').ToList();
-                Regex NonWord = NonWordFactory();
                 var currentStyle = styles[item.Style];
                 if (!item.Text.StartsWith("{"))
                 {
@@ -38,7 +37,7 @@ namespace AssParser.Lib
                         text = spLeft[0];
                         spLeft.RemoveAt(0);
                     }
-                    var word = NonWord.Replace(text, "");
+                    var word = text.Replace("\\N", "").Replace("\\n", "").Replace("\\h", "");
                     if (word.Length > 0)
                     {
                         var bold = Convert.ToInt32(currentStyle.Bold);
@@ -112,7 +111,7 @@ namespace AssParser.Lib
                         }
                         if (spRight.Length > 1)
                         {
-                            var word = NonWord.Replace(spRight[1], "");
+                            var word = spRight[1].Replace("\\N", "").Replace("\\n", "").Replace("\\h", "");
                             if (word.Length > 0)
                             {
                                 var bold = Convert.ToInt32(currentStyle.Bold);
@@ -154,7 +153,5 @@ namespace AssParser.Lib
             }
             return fonts;
         }
-        [GeneratedRegex("\\s|(\\\\n)|(\\\\N)|(\\\\h)")]
-        private static partial Regex NonWordFactory();
     }
 }
