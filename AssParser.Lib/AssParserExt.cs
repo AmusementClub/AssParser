@@ -144,7 +144,7 @@ namespace AssParser.Lib
                 var sb = new StringBuilder();
                 foreach (var c in s.Value)
                 {
-                    sb.Append(c);
+                    sb.Append(c.Key);
                 }
                 fonts[i++] = new()
                 {
