@@ -1,21 +1,150 @@
-﻿namespace AssParser.Lib
+﻿using System.Collections.Specialized;
+using System.Reflection.Metadata.Ecma335;
+
+namespace AssParser.Lib
 {
     public class AssSubtitleModel
     {
-        public ScriptInfo ScriptInfo { get; set; }
-        public Styles styles { get; set; }
-        public Events events { get; set; } 
+        public ScriptInfo ScriptInfo { get; set; } = new ();
+        public Styles Styles { get; set; } = new ();
+        public Events Events { get; set; } = new ();
+        public List<string> Ord { get; set; } = new ();
+        public Dictionary<string, string> UnknownSections { get; set; } = new();
     }
+
     public class ScriptInfo
     {
-        public string[] Coments;
-        public string Title;
-        public string ScriptType;
-        public int WrapStyle;
-        public string ScaledBorderAndShadow;
-        public string YCbCrMatrix;
-        public int PlayResX;
-        public int PlayResY;
+        public ScriptInfo()
+        {
+            SciptInfoItems = new();
+        }
+        public SortedList<string, string?> SciptInfoItems;
+        public string? Title
+        {
+            set
+            {
+                SciptInfoItems["Title"] = value;
+            }
+            get
+            {
+                if (SciptInfoItems.TryGetValue("Title", out var item))
+                {
+                    return item;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        public string? ScriptType
+        {
+            set
+            {
+                SciptInfoItems["ScriptType"] = value;
+            }
+            get
+            {
+                if (SciptInfoItems.TryGetValue("ScriptType", out var item))
+                {
+                    return item;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        public int? WrapStyle
+        {
+            set
+            {
+                SciptInfoItems["WrapStyle"] = value.ToString();
+            }
+            get
+            {
+                if (SciptInfoItems.TryGetValue("WrapStyle", out var item))
+                {
+                    return Convert.ToInt32(item);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        public string? ScaledBorderAndShadow
+        {
+            set
+            {
+                SciptInfoItems["ScaledBorderAndShadow"] = value;
+            }
+            get
+            {
+                if (SciptInfoItems.TryGetValue("ScaledBorderAndShadow", out var item))
+                {
+                    return item;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        } 
+        public string? YCbCrMatrix
+        {
+            set
+            {
+                SciptInfoItems["YCbCrMatrix"] = value;
+            }
+            get
+            {
+                if (SciptInfoItems.TryGetValue("YCbCrMatrix", out var item))
+                {
+                    return item;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        public int? PlayResX
+        {
+            set
+            {
+                SciptInfoItems["PlayResX"] = value.ToString();
+            }
+            get
+            {
+                if (SciptInfoItems.TryGetValue("PlayResX", out var item))
+                {
+                    return Convert.ToInt32(item);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        public int? PlayResY
+        {
+            set
+            {
+                SciptInfoItems["PlayResY"] = value.ToString();
+            }
+            get
+            {
+                if (SciptInfoItems.TryGetValue("PlayResY", out var item))
+                {
+                    return Convert.ToInt32(item);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
     }
     public class Styles
     {

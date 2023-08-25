@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssParser", "AssParser\AssParser.csproj", "{D35EC867-62B6-43EC-BF1B-7F3EC4266614}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssParser.Lib", "AssParser.Lib\AssParser.Lib.csproj", "{54A77E0E-F7CC-4185-B264-8EB59A9D6265}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssParser.Lib", "AssParser.Lib\AssParser.Lib.csproj", "{54A77E0E-F7CC-4185-B264-8EB59A9D6265}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

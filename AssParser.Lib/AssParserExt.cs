@@ -17,11 +17,11 @@ namespace AssParser.Lib
             ConcurrentDictionary<string, ConcurrentDictionary<char, byte>> result = new();
             BlockingCollection<FontDetail> words = new();
             Dictionary<string, Style> styles = new();
-            foreach (var style in assSubtitle.styles.styles)
+            foreach (var style in assSubtitle.Styles.styles)
             {
                 styles.TryAdd(style.Name, style);
             }
-            Parallel.ForEach(assSubtitle.events.events, item =>
+            Parallel.ForEach(assSubtitle.Events.events, item =>
             {
                 var spLeft = item.Text.Split('{').ToList();
                 var currentStyle = styles[item.Style];
