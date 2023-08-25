@@ -45,7 +45,7 @@ namespace AssParser.Lib
                 switch (tag)
                 {
                     case "[Script Info]":
-                        while (assfile.Peek() is not '[')
+                        while (assfile.Peek() is not '[' and > -1)
                         {
                             if (assfile.Peek() is '\r' or '\n')
                             {
@@ -76,7 +76,7 @@ namespace AssParser.Lib
                         }
                         assSubtitleModel.Styles.styles = new();
                         //Read sytle lines
-                        while (assfile.Peek() is not '[')
+                        while (assfile.Peek() is not '[' and > -1)
                         {
                             if (assfile.Peek() is '\r' or '\n')
                             {
@@ -187,7 +187,7 @@ namespace AssParser.Lib
                             assSubtitleModel.Events.Format[i] = assSubtitleModel.Events.Format[i].Trim();
                         }
 
-                        while (assfile.Peek() is not '[')
+                        while (assfile.Peek() is not '[' and > -1)
                         {
                             if (assfile.Peek() is '\r' or '\n')
                             {
