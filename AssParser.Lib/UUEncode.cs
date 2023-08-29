@@ -39,7 +39,7 @@ namespace AssParser.Lib
                     dst[2] = ((0 & 0xF) << 2) | ((0 & 0xC0) >> 6);
                     dst[3] = 0 & 0x3F;
                 }
-                for(int k = 0; k < Math.Min(data.Length - i + 1, 4); k++)
+                for (int k = 0; k < Math.Min(data.Length - i + 1, 4); k++)
                 {
                     res[j++] = (char)(dst[k] + 33);
                     written++;
