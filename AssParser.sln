@@ -7,6 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssParser", "AssParser\AssP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssParser.Lib", "AssParser.Lib\AssParser.Lib.csproj", "{54A77E0E-F7CC-4185-B264-8EB59A9D6265}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssParser.Test", "AssParser.Test\AssParser.Test.csproj", "{315F3264-222E-49C7-A259-7CA1417EFB36}"
+	ProjectSection(ProjectDependencies) = postProject
+		{54A77E0E-F7CC-4185-B264-8EB59A9D6265} = {54A77E0E-F7CC-4185-B264-8EB59A9D6265}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +26,10 @@ Global
 		{54A77E0E-F7CC-4185-B264-8EB59A9D6265}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54A77E0E-F7CC-4185-B264-8EB59A9D6265}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54A77E0E-F7CC-4185-B264-8EB59A9D6265}.Release|Any CPU.Build.0 = Release|Any CPU
+		{315F3264-222E-49C7-A259-7CA1417EFB36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{315F3264-222E-49C7-A259-7CA1417EFB36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{315F3264-222E-49C7-A259-7CA1417EFB36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{315F3264-222E-49C7-A259-7CA1417EFB36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
