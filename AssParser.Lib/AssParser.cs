@@ -252,7 +252,7 @@ namespace AssParser.Lib
                         break;
                     default:
                         StringBuilder BodyBuffer = new();
-                        while (assfile.Peek() is not '[' and > -1)
+                        while (assfile.Peek() is not '\r' and not '\n' and > -1)
                         {
                             BodyBuffer.AppendLine(await assfile.ReadLineAsync());
                         }
