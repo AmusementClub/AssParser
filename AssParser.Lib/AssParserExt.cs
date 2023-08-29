@@ -37,7 +37,7 @@ namespace AssParser.Lib
                         text = spLeft[0];
                         spLeft.RemoveAt(0);
                     }
-                    var word = text.Replace("\\N", "").Replace("\\n", "").Replace("\\h", "");
+                    var word = text.Replace("\\N", "").Replace("\\n", "").Replace("\\h", "\u00A0");
                     if (word.Length > 0)
                     {
                         var bold = Convert.ToInt32(currentStyle.Bold);
@@ -111,7 +111,7 @@ namespace AssParser.Lib
                         }
                         if (spRight.Length > 1)
                         {
-                            var word = spRight[1].Replace("\\N", "").Replace("\\n", "").Replace("\\h", "");
+                            var word = spRight[1].Replace("\\N", "").Replace("\\n", "").Replace("\\h", "\u00A0");
                             if (word.Length > 0)
                             {
                                 var bold = Convert.ToInt32(currentStyle.Bold);
