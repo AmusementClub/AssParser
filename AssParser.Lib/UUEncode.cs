@@ -14,31 +14,15 @@ namespace AssParser.Lib
         {
             int written = 0;
             int j = 0;
-            char[] res = new char[(data.Length + 2) / 3 * 4 + ((data.Length + 2) / 3 * 4) / 80 * 2];
+            //TODO Calculate exact res length to remove .TrimEnd('\0')
+            char[] res = new char[(data.Length + 2) / 3 * 4 + (data.Length + 2) / 3 * 4 / 80 * 2];
             byte[] dst = new byte[4];
             for (int i = 0; i < data.Length; i += 3)
             {
                 dst[0] = (byte)(data[i] >> 2);
-                if (i + 1 < data.Length)
-                {
-                    dst[1] = (byte)(((data[i] & 0x3) << 4) | (((data[i + 1] & 0xF0) >> 4)));
-                    if (i + 2 < data.Length)
-                    {
-                        dst[2] = (byte)(((data[i + 1] & 0xF) << 2) | ((data[i + 2] & 0xC0) >> 6));
-                        dst[3] = (byte)(data[i + 2] & 0x3F);
-                    }
-                    else
-                    {
-                        dst[2] = (byte)(((data[i + 1] & 0xF) << 2) | ((0 & 0xC0) >> 6));
-                        dst[3] = 0 & 0x3F;
-                    }
-                }
-                else
-                {
-                    dst[1] = (byte)(((data[i] & 0x3) << 4) | ((0 & 0xF0) >> 4));
-                    dst[2] = ((0 & 0xF) << 2) | ((0 & 0xC0) >> 6);
-                    dst[3] = 0 & 0x3F;
-                }
+                dst[1] = (byte)(((data[i] & 0x3) << 4) | ((data.ElementAtOrDefault(i + 1) & 0xF0) >> 4));
+                dst[2] = (byte)(((data.ElementAtOrDefault(i + 1) & 0xF) << 2) | ((data.ElementAtOrDefault(i + 2) & 0xC0) >> 6));
+                dst[3] = (byte)(data.ElementAtOrDefault(i + 2) & 0x3F);
                 for (int k = 0; k < Math.Min(data.Length - i + 1, 4); k++)
                 {
                     res[j++] = (char)(dst[k] + 33);
