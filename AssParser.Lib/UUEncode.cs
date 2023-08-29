@@ -43,7 +43,7 @@ namespace AssParser.Lib
             for (int i = 0; i + 1 < data.Length;)
             {
                 int bytes = 0;
-                byte[] src = "\0\0\0\0"u8.ToArray();
+                byte[] src = new byte[4];
                 for (int j = 0; j < 4 && i < data.Length; ++i)
                 {
                     var c = data[i];
