@@ -1,66 +1,79 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace AssParser.Lib
 {
     public class UUEncode
     {
-        static public string Encode(byte[] data, bool insertBr = true)
+        public static string Encode(byte[] data, bool insertBr = true, bool crlf = true)
         {
-            int written = 0;
-            int j = 0;
+            var written = 0;
+            var curr = 0;
             //TODO Calculate exact res length to remove .TrimEnd('\0')
-            char[] res = new char[(data.Length + 2) / 3 * 4 + (data.Length + 2) / 3 * 4 / 80 * 2];
-            byte[] dst = new byte[4];
-            for (int i = 0; i < data.Length; i += 3)
+            var res = new char[(data.Length + 2) / 3 * 4 + (data.Length + 2) / 3 * 4 / 80 * 2];
+            var dst = new byte[4];
+            var length = data.Length;
+            for (var pos = 0; pos < length; pos += 3)
             {
-                dst[0] = (byte)(data[i] >> 2);
-                dst[1] = (byte)(((data[i] & 0x3) << 4) | ((data.ElementAtOrDefault(i + 1) & 0xF0) >> 4));
-                dst[2] = (byte)(((data.ElementAtOrDefault(i + 1) & 0xF) << 2) | ((data.ElementAtOrDefault(i + 2) & 0xC0) >> 6));
-                dst[3] = (byte)(data.ElementAtOrDefault(i + 2) & 0x3F);
-                for (int k = 0; k < Math.Min(data.Length - i + 1, 4); k++)
+                var numBytesRemain = Math.Min(length - pos, 3);
+                
+                dst[0] = (byte)(data[pos] >> 2);
+                dst[1] = 0;
+                switch (numBytesRemain)
                 {
-                    res[j++] = (char)(dst[k] + 33);
+                    case 2:
+                        dst[1] = (byte)(((data[pos] & 0x3) << 4) | ((data[pos + 1] & 0xF0) >> 4));
+                        dst[2] = 0;
+                        break;
+                    case 3:
+                        dst[1] = (byte)(((data[pos] & 0x3) << 4) | ((data[pos + 1] & 0xF0) >> 4));
+                        dst[2] = (byte)(((data[pos + 1] & 0xF) << 2) | ((data[pos + 2] & 0xC0) >> 6));
+                        dst[3] = (byte)(data[pos + 2] & 0x3F);
+                        break;
+                }
+                for (var i = 0; i < numBytesRemain + 1; i++)
+                {
+                    res[curr++] = (char)(dst[i] + 33);
                     written++;
-                    if (insertBr && written == 80 && i + 3 < data.Length)
+                    if (insertBr && written == 80 && numBytesRemain == 3)
                     {
-                        res[j++] = '\r';
-                        res[j++] = '\n';
+                        if (crlf) res[curr++] = '\r';
+                        res[curr++] = '\n';
                         written = 0;
                     }
                 }
             }
             return new string(res).TrimEnd('\0');
         }
-        static public byte[] Decode(string data)
+
+        public static byte[] Decode(string data)
         {
-            List<byte> res = new(data.Length * 3 / 4);
-            for (int i = 0; i + 1 < data.Length;)
+            var byteData = Encoding.ASCII.GetBytes(data);
+            var curr = 0;
+            var src = new byte[4];
+            var res = new byte[byteData.Length / 4 * 3];
+            var length = byteData.Length;
+            for (var pos = 0; pos + 1 < length;)
             {
-                int bytes = 0;
-                byte[] src = new byte[4];
-                for (int j = 0; j < 4 && i < data.Length; ++i)
+                var numBytesRemain = Math.Min(length - pos, 4);
+                var bytes = 0;
+                for (var i = 0; i < numBytesRemain; ++pos)
                 {
-                    var c = data[i];
-                    if (c is not ('\n' or '\r'))
+                    var c = byteData[pos];
+                    if (c is not ((byte)'\n' or (byte)'\r'))
                     {
-                        src[j++] = (byte)(c - 33);
+                        src[i++] = (byte)(c - 33);
                         bytes++;
                     }
                 }
                 if (bytes > 1)
-                    res.Add((byte)((src[0] << 2) | (src[1] >> 4)));
+                    res[curr++] = (byte)((src[0] << 2) | (src[1] >> 4));
                 if (bytes > 2)
-                    res.Add((byte)(((src[1] & 0xF) << 4) | (src[2] >> 2)));
+                    res[curr++] = (byte)(((src[1] & 0xF) << 4) | (src[2] >> 2));
                 if (bytes > 3)
-                    res.Add((byte)(((src[2] & 0x3) << 6) | (src[3])));
+                    res[curr++] = (byte)(((src[2] & 0x3) << 6) | (src[3]));
             }
-            return res.ToArray();
+            Array.Resize(ref res, curr);
+            return res;
         }
     }
 }
