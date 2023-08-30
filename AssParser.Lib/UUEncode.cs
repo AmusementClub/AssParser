@@ -8,8 +8,12 @@ namespace AssParser.Lib
         {
             var written = 0;
             var curr = 0;
-            //TODO Calculate exact res length to remove .TrimEnd('\0')
-            var res = new char[(data.Length + 2) / 3 * 4 + (data.Length + 2) / 3 * 4 / 80 * 2];
+            var resLength = data.Length / 3 * 4 + (data.Length % 3 == 0 ? 0 : data.Length % 3 + 1);
+            if (insertBr)
+            {
+                resLength += (resLength / 80 - (resLength % 80 == 0 ? 1 : 0)) * (crlf ? 2 : 1);
+            }
+            var res = new char[resLength];
             var dst = new byte[4];
             var length = data.Length;
             for (var pos = 0; pos < length; pos += 3)
@@ -42,7 +46,7 @@ namespace AssParser.Lib
                     }
                 }
             }
-            return new string(res).TrimEnd('\0');
+            return new string(res);
         }
 
         public static byte[] Decode(string data)
@@ -50,7 +54,7 @@ namespace AssParser.Lib
             var byteData = Encoding.ASCII.GetBytes(data);
             var curr = 0;
             var src = new byte[4];
-            var res = new byte[byteData.Length / 4 * 3];
+            var res = new byte[byteData.Length * 3 / 4];
             var length = byteData.Length;
             for (var pos = 0; pos + 1 < length;)
             {
