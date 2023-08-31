@@ -5,10 +5,10 @@ namespace AssParser.Lib
 {
     public class AssSubtitleModel
     {
-        public ScriptInfo ScriptInfo { get; set; } = new ();
-        public Styles Styles { get; set; } = new ();
-        public Events Events { get; set; } = new ();
-        public List<string> Ord { get; set; } = new ();
+        public ScriptInfo ScriptInfo { get; set; } = new();
+        public Styles Styles { get; set; } = new();
+        public Events Events { get; set; } = new();
+        public List<string> Ord { get; set; } = new();
         public Dictionary<string, string> UnknownSections { get; set; } = new();
     }
 
@@ -90,7 +90,7 @@ namespace AssParser.Lib
                     return null;
                 }
             }
-        } 
+        }
         public string? YCbCrMatrix
         {
             set
@@ -203,11 +203,39 @@ namespace AssParser.Lib
         Dialogue
     }
 
-    public class FontDetail
+    public class FontDetail : IEquatable<FontDetail?>
     {
-        public string FontName;
-        public string UsedChar;
+        public string FontName = "";
+        public string UsedChar = "";
         public int Bold;
         public bool IsItalic;
+
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as FontDetail);
+        }
+
+        public bool Equals(FontDetail? other)
+        {
+            return other is not null &&
+                   FontName == other.FontName &&
+                   Bold == other.Bold &&
+                   IsItalic == other.IsItalic;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(FontName, Bold, IsItalic);
+        }
+
+        public static bool operator ==(FontDetail? left, FontDetail? right)
+        {
+            return EqualityComparer<FontDetail>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(FontDetail? left, FontDetail? right)
+        {
+            return !(left == right);
+        }
     }
 }

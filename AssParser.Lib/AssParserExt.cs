@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
@@ -14,7 +15,7 @@ namespace AssParser.Lib
     {
         public static FontDetail[] UsedFonts(this AssSubtitleModel assSubtitle)
         {
-            ConcurrentDictionary<string, ConcurrentDictionary<char, byte>> result = new();
+            ConcurrentDictionary<FontDetail, ConcurrentDictionary<char, byte>> result = new();
             BlockingCollection<FontDetail> words = new();
             Dictionary<string, Style> styles = new();
             foreach (var style in assSubtitle.Styles.styles)
@@ -42,14 +43,18 @@ namespace AssParser.Lib
                     {
                         var bold = Convert.ToInt32(currentStyle.Bold);
                         var isItalic = currentStyle.Italic != "0";
-                        result.TryAdd(currentStyle.Fontname + (bold > 0 ? "_Bold" + bold : "") + (isItalic ? "_Italic" : ""), new());
-                        words.Add(new()
+                        var detail = new FontDetail()
                         {
                             FontName = currentStyle.Fontname,
                             UsedChar = word,
                             Bold = bold,
                             IsItalic = isItalic
-                        });
+                        };
+                        var charDir =  result.GetOrAdd(detail, new ConcurrentDictionary<char, byte>());
+                        foreach (var c in word)
+                        {
+                            charDir.TryAdd(c, 0);
+                        }
                     }
                 }
                 if (spLeft == null)
@@ -116,25 +121,21 @@ namespace AssParser.Lib
                             {
                                 var bold = Convert.ToInt32(currentStyle.Bold);
                                 var isItalic = currentStyle.Italic != "0";
-                                result.TryAdd(currentStyle.Fontname + (bold > 0 ? "_Bold" + bold : "") + (isItalic ? "_Italic" : ""), new());
-                                words.Add(new()
+                                var detail = new FontDetail()
                                 {
                                     FontName = currentStyle.Fontname,
                                     UsedChar = word,
                                     Bold = bold,
                                     IsItalic = isItalic
-                                });
+                                };
+                                var charDir = result.GetOrAdd(detail, new ConcurrentDictionary<char, byte>());
+                                foreach (var c in word)
+                                {
+                                    charDir.TryAdd(c, 0);
+                                }
                             }
                         }
-
                     }
-                }
-            });
-            Parallel.ForEach(words, word =>
-            {
-                foreach (var s in word.UsedChar)
-                {
-                    result[word.FontName + (word.Bold > 0 ? "_Bold" + word.Bold : "") + (word.IsItalic ? "_Italic" : "")].TryAdd(s, 0);
                 }
             });
             var fonts = new FontDetail[result.Count];
@@ -146,11 +147,8 @@ namespace AssParser.Lib
                 {
                     sb.Append(c.Key);
                 }
-                fonts[i++] = new()
-                {
-                    FontName = s.Key,
-                    UsedChar = sb.ToString()
-                };
+                s.Key.UsedChar = sb.ToString();
+                fonts[i++] = s.Key;
             }
             return fonts;
         }
