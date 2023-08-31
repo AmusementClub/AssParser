@@ -8,9 +8,9 @@ namespace AssParser.Lib
         {
             '!', '"', '#', '$', '%', '&', '\'', '(',
             ')', '*', '+', ',', '-', '.', '/', '0',
-            '1', '2', '3', '4', '5', '6', '7','8',
-            '9', ':', ';', '<', '=', '>', '?','@',
-            'A', 'B', 'C', 'D', 'E', 'F', 'G','H',
+            '1', '2', '3', '4', '5', '6', '7', '8',
+            '9', ':', ';', '<', '=', '>', '?', '@',
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
             'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
             'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
             'Y', 'Z', '[', '\\', ']', '^', '_', '`',
@@ -66,10 +66,10 @@ namespace AssParser.Lib
         public static byte[] Decode(string data)
         {
             var byteData = Encoding.ASCII.GetBytes(data);
+            var length = byteData.Length;
             var curr = 0;
             var src = new byte[4];
-            var res = new byte[byteData.Length * 3 / 4];
-            var length = byteData.Length;
+            var res = new byte[length * 3 / 4];
             for (var pos = 0; pos + 1 < length;)
             {
                 var numBytesRemain = Math.Min(length - pos, 4);
