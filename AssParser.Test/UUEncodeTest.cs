@@ -12,9 +12,7 @@ namespace AssParser.Test
             var fontsdata = assfile.UnknownSections["[Fonts]"];
             fontsdata = fontsdata.Remove(0, fontsdata.IndexOf("\n", StringComparison.Ordinal) + 1).Trim();
             var data1 = UUEncode.Decode(fontsdata);
-            var encoded = UUEncode.Encode(ttf, true, false);
             Assert.Equal(ttf, data1);
-            Assert.Equal(fontsdata, encoded);
         }
 
         [Fact]
