@@ -6,7 +6,9 @@
     <Nullable>enable</Nullable>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>1.0.0-alpha</Version>
+    <Version>1.2.1</Version>
+    <RepositoryUrl>https://github.com/AmusementClub/AssParser.git</RepositoryUrl> 
+    <RepositoryType>git</RepositoryType> 
   </PropertyGroup>
 
   <ItemGroup>
