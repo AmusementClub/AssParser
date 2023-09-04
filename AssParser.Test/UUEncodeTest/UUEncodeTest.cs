@@ -16,15 +16,15 @@ namespace AssParser.Test.UUEncodeTest
         public void UUDecode_ShouldBe_Same()
         {
             var ttf = File.ReadAllBytes(Path.Combine("UUEncodeTest", "FreeSans.ttf"));
-            var data1 = UUEncode.Decode(fontsdata);
+            var data1 = UUEncode.Decode(fontsdata, out _);
             Assert.Equal(ttf, data1);
         }
 
         [Fact]
         public void UUEncode_ShouldBe_Same()
         {
-            var data1 = UUEncode.Decode(fontsdata);
-            var encoded = UUEncode.Encode(data1, true, true);
+            var data1 = UUEncode.Decode(fontsdata, out var crlf);
+            var encoded = UUEncode.Encode(data1, true, crlf);
             Assert.Equal(fontsdata, encoded);
         }
     }

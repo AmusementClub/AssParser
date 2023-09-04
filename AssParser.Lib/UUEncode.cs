@@ -63,8 +63,9 @@ namespace AssParser.Lib
             return new string(res);
         }
 
-        public static byte[] Decode(string data)
+        public static byte[] Decode(string data, out bool crlf)
         {
+            crlf = false;
             var byteData = Encoding.ASCII.GetBytes(data);
             var length = byteData.Length;
             var curr = 0;
@@ -77,10 +78,14 @@ namespace AssParser.Lib
                 for (var i = 0; i < numBytesRemain; ++pos)
                 {
                     var c = byteData[pos];
-                    if (c is not ((byte)'\n' or (byte)'\r'))
+                    if (c != '\n' && c != '\r')
                     {
                         src[i++] = (byte)(c - 33);
                         bytes++;
+                    }
+                    else
+                    {
+                        if (!crlf && c == '\r') crlf = true;
                     }
                 }
                 if (bytes > 1)
