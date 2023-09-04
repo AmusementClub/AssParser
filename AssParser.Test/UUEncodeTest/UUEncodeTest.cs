@@ -1,13 +1,13 @@
 using AssParser.Lib;
 
-namespace AssParser.Test
+namespace AssParser.Test.UUEncodeTest
 {
     public class UUEncodeTest
     {
         readonly string fontsdata;
         public UUEncodeTest()
         {
-            var assfile = Lib.AssParser.ParseAssFile(Path.Combine("Resource", "1.ass")).Result;
+            var assfile = Lib.AssParser.ParseAssFile(Path.Combine("UUEncodeTest", "1.ass")).Result;
             fontsdata = assfile.UnknownSections["[Fonts]"];
             fontsdata = fontsdata.Remove(0, fontsdata.IndexOf("\n", StringComparison.Ordinal) + 1).Trim();
         }
@@ -15,7 +15,7 @@ namespace AssParser.Test
         [Fact]
         public void UUDecode_ShouldBe_Same()
         {
-            var ttf = File.ReadAllBytes(Path.Combine("Resource", "FreeSans.ttf"));
+            var ttf = File.ReadAllBytes(Path.Combine("UUEncodeTest", "FreeSans.ttf"));
             var data1 = UUEncode.Decode(fontsdata);
             Assert.Equal(ttf, data1);
         }
