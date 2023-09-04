@@ -41,7 +41,7 @@ namespace AssParser.Lib
                     var word = text.Replace("\\N", "").Replace("\\n", "").Replace("\\h", "\u00A0");
                     if (word.Length > 0)
                     {
-                        var bold = Convert.ToInt32(currentStyle.Bold);
+                        var bold = currentStyle.Bold != "0" ? 1 : 0;
                         var isItalic = currentStyle.Italic != "0";
                         var detail = new FontDetail()
                         {
@@ -50,7 +50,7 @@ namespace AssParser.Lib
                             Bold = bold,
                             IsItalic = isItalic
                         };
-                        var charDir =  result.GetOrAdd(detail, new ConcurrentDictionary<char, byte>());
+                        var charDir = result.GetOrAdd(detail, new ConcurrentDictionary<char, byte>());
                         foreach (var c in word)
                         {
                             charDir.TryAdd(c, 0);
@@ -120,6 +120,7 @@ namespace AssParser.Lib
                             if (word.Length > 0)
                             {
                                 var bold = Convert.ToInt32(currentStyle.Bold);
+                                bold = bold == -1 ? 1 : bold;
                                 var isItalic = currentStyle.Italic != "0";
                                 var detail = new FontDetail()
                                 {

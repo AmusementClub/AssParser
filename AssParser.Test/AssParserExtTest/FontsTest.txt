@@ -1,0 +1,11 @@
+Noto Sans	700	False	丁
+Noto Sans	0	True	そさしすせ
+Noto Sans	300	False	丙
+TH Baijam	1	False	xyz
+Noto Sans	200	False	乙
+FOT-TsukuARdGothic Std R	0	False	 
+Noto Sans	1	True	まみむめも
+TH Baijam	0	False	てhiとjuたvwopfqg
+Noto Sans	100	False	甲
+Noto Sans	1	False	tこきbcくderけかsa
+Noto Sans	0	False	nえあkおいlmう

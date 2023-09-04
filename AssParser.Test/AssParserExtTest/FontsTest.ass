@@ -1,0 +1,36 @@
+[Script Info]
+Title: Fonts Test
+ScriptType: v4.00+
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+PlayResX: 1920
+PlayResY: 1080
+YCbCr Matrix: TV.709
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Noto Sans,100,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,5,1.5,2,96,96,65,1
+Style: Bold,Noto Sans,50,&H00F4F6F6,&H000019FF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,5,10,10,10,1
+Style: Italic,Noto Sans,100,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,-1,0,0,100,100,0,0,1,5,1.5,8,96,96,33,1
+Style: Bold_Italic,Noto Sans,90,&H00FFFFFF,&H00FFFFFF,&H00001E06,&H00000000,-1,-1,0,0,100,100,0,0,1,5,1.5,7,96,96,65,1
+Style: Other,TH Baijam,133,&H00EEFBDB,&H000019FF,&H0001031B,&H00000000,0,0,0,0,100,100,0,0,1,13,2,2,10,10,10,1
+Style: Space,FOT-TsukuARdGothic Std R,133,&H00EEFBDB,&H000019FF,&H0001031B,&H00000000,0,0,0,0,100,100,0,0,1,13,2,2,10,10,10,1
+
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:02:07.06,0:02:10.10,Default,,0,0,0,,あいうえお
+Dialogue: 0,0:02:07.06,0:02:10.10,Bold,,0,0,0,,かきくけこ
+Dialogue: 0,0:02:09.94,0:02:12.02,Italic,,0,0,0,,さしすせそ
+Dialogue: 0,0:02:07.06,0:02:10.10,Bold_Italic,,0,0,0,,まみむめも
+Dialogue: 0,0:02:09.94,0:02:12.02,Other,,0,0,0,,たてと
+Dialogue: 0,0:03:21.98,0:03:23.64,Default,,0,0,0,,{\rBold}abcde
+Dialogue: 0,0:03:21.98,0:03:23.64,Default,,0,0,0,,{\rOther}fghij
+Dialogue: 0,0:03:23.64,0:03:27.14,Default,,0,0,0,,{\b1\i1\r}klmn
+Dialogue: 0,0:03:23.64,0:03:27.14,Default,,0,0,0,,{\fnTH Baijam}opq
+Dialogue: 0,0:04:12.70,0:04:15.31,Default,,0,0,0,,{\b1\i1\rBold}rst{\rSpace}\n\N{\rOther}uvw{\b1}xyz
+Dialogue: 0,0:04:12.70,0:04:15.31,Space,,0,0,0,,\n\N\h
+Dialogue: 0,0:04:34.83,0:04:39.00,Default,,0,0,0,,{\b100}甲
+Dialogue: 0,0:04:34.83,0:04:39.00,Default,,0,0,0,,{\b200}乙
+Dialogue: 0,0:04:34.83,0:04:39.00,Default,,0,0,0,,{\b300}丙
+Dialogue: 0,0:04:34.83,0:04:39.00,Default,,0,0,0,,{\b700}丁
