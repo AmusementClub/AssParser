@@ -15,7 +15,14 @@ namespace AssParser.Lib
             'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
             'Y', 'Z', '[', '\\', ']', '^', '_', '`',
         };
-
+        /// <summary>
+        /// Use UUEncode to encode byte[] data. Despite being called uuencoding by ass_specs.doc, the format is actually somewhat different from real uuencoding.
+        /// Please refer to https://github.com/Aegisub/Aegisub/blob/6f546951b4f004da16ce19ba638bf3eedefb9f31/libaegisub/ass/uuencode.cpp for more information.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="insertBr">Whether break the line after 80 characters.</param>
+        /// <param name="crlf">The linebreak type of source string. True if is CRLF.</param>
+        /// <returns>UUEncoded string.</returns>
         public static string Encode(byte[] data, bool insertBr = true, bool crlf = true)
         {
             var written = 0;
@@ -62,7 +69,13 @@ namespace AssParser.Lib
             }
             return new string(res);
         }
-
+        /// <summary>
+        /// Use UUEncode to decode byte[] data. Despite being called uuencoding by ass_specs.doc, the format is actually somewhat different from real uuencoding.
+        /// Please refer to https://github.com/Aegisub/Aegisub/blob/6f546951b4f004da16ce19ba638bf3eedefb9f31/libaegisub/ass/uuencode.cpp for more information.
+        /// </summary>
+        /// <param name="data">UUEncoded string.</param>
+        /// <param name="crlf">The linebreak type of source string. True if is CRLF.</param>
+        /// <returns>UUDecoded byte[].</returns>
         public static byte[] Decode(string data, out bool crlf)
         {
             crlf = false;

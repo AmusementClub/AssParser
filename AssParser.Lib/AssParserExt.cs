@@ -13,6 +13,13 @@ namespace AssParser.Lib
 {
     public static partial class AssParserExt
     {
+        /// <summary>
+        /// Export all used fonts. All used chars are listed in FontDetail.UsedChar, including \h.
+        /// Italic, Bold and @(vertical alignment) is considered as different font.
+        /// </summary>
+        /// <param name="assSubtitle"></param>
+        /// <returns>List of distinct used fonts.</returns>
+        /// <exception cref="Exception">If there is any unvalid part.</exception>
         public static FontDetail[] UsedFonts(this AssSubtitleModel assSubtitle)
         {
             ConcurrentDictionary<FontDetail, ConcurrentDictionary<char, byte>> result = new();

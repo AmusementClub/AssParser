@@ -23,16 +23,20 @@ namespace AssParser.Lib
                 return (header, "");
             }
         }
-
-        public static async Task<AssSubtitleModel> ParseAssFile(string assFile)
+        /// <summary>
+        /// Parse a single ass file asynchronously.
+        /// </summary>
+        /// <param name="assStream">A StreamReader of your ass file.</param>
+        /// <returns></returns>
+        /// <exception cref="Exception">If there is any unvalid part.</exception>
+        public static async Task<AssSubtitleModel> ParseAssFile(StreamReader assStream)
         {
-            using StreamReader assfile = new(File.Open(assFile, FileMode.Open));
             AssSubtitleModel assSubtitleModel = new();
             string header;
             string body;
-            while (assfile.Peek() > -1)
+            while (assStream.Peek() > -1)
             {
-                var tag = await assfile.ReadLineAsync();
+                var tag = await assStream.ReadLineAsync();
                 if (tag == null || tag.Length == 0)
                 {
                     continue;
@@ -45,26 +49,26 @@ namespace AssParser.Lib
                 switch (tag)
                 {
                     case "[Script Info]":
-                        while (assfile.Peek() is not '[' and > -1)
+                        while (assStream.Peek() is not '[' and > -1)
                         {
-                            if (assfile.Peek() is '\r' or '\n')
+                            if (assStream.Peek() is '\r' or '\n')
                             {
-                                assfile.Read();
+                                assStream.Read();
                                 continue;
                             }
-                            if (assfile.Peek() == ';')
+                            if (assStream.Peek() == ';')
                             {
-                                assfile.Read();
-                                assSubtitleModel.ScriptInfo.SciptInfoItems.Add(";", await assfile.ReadLineAsync());
+                                assStream.Read();
+                                assSubtitleModel.ScriptInfo.SciptInfoItems.Add(";", await assStream.ReadLineAsync());
                             }
-                            (header, body) = await ParseLine(assfile);
+                            (header, body) = await ParseLine(assStream);
                             assSubtitleModel.ScriptInfo.SciptInfoItems.Add(header, body);
                         }
                         break;
                     case "[V4+ Styles]":
                         //[V4+ Styles]
                         //Read format line
-                        (header, body) = await ParseLine(assfile);
+                        (header, body) = await ParseLine(assStream);
                         if (header != "Format")
                         {
                             throw new("No format line");
@@ -76,14 +80,14 @@ namespace AssParser.Lib
                         }
                         assSubtitleModel.Styles.styles = new();
                         //Read sytle lines
-                        while (assfile.Peek() is not '[' and > -1)
+                        while (assStream.Peek() is not '[' and > -1)
                         {
-                            if (assfile.Peek() is '\r' or '\n')
+                            if (assStream.Peek() is '\r' or '\n')
                             {
-                                assfile.Read();
+                                assStream.Read();
                                 continue;
                             }
-                            (header, body) = await ParseLine(assfile);
+                            (header, body) = await ParseLine(assStream);
                             if (header != "Style")
                             {
                                 throw new("Wrong Style Line");
@@ -174,7 +178,7 @@ namespace AssParser.Lib
                     case "[Events]":
                         //Read Events
                         //Read format line
-                        (header, body) = await ParseLine(assfile);
+                        (header, body) = await ParseLine(assStream);
                         if (header != "Format")
                         {
                             throw new("No format line");
@@ -187,15 +191,15 @@ namespace AssParser.Lib
                             assSubtitleModel.Events.Format[i] = assSubtitleModel.Events.Format[i].Trim();
                         }
 
-                        while (assfile.Peek() is not '[' and > -1)
+                        while (assStream.Peek() is not '[' and > -1)
                         {
-                            if (assfile.Peek() is '\r' or '\n')
+                            if (assStream.Peek() is '\r' or '\n')
                             {
-                                assfile.Read();
+                                assStream.Read();
                                 continue;
                             }
                             Event events = new();
-                            (header, body) = await ParseLine(assfile);
+                            (header, body) = await ParseLine(assStream);
                             if (header == "Comment")
                             {
                                 events.Type = EventType.Comment;
@@ -252,15 +256,27 @@ namespace AssParser.Lib
                         break;
                     default:
                         StringBuilder BodyBuffer = new();
-                        while (assfile.Peek() is not '\r' and not '\n' and > -1)
+                        while (assStream.Peek() is not '\r' and not '\n' and > -1)
                         {
-                            BodyBuffer.AppendLine(await assfile.ReadLineAsync());
+                            BodyBuffer.AppendLine(await assStream.ReadLineAsync());
                         }
                         assSubtitleModel.UnknownSections.Add(tag, BodyBuffer.ToString());
                         break;
                 }
             }
             return assSubtitleModel;
+        }
+
+        /// <summary>
+        /// Parse a single ass file asynchronously.
+        /// </summary>
+        /// <param name="assFile">Path to your ass file.</param>
+        /// <returns>Parsed AssSubtitleModel object.</returns>
+        /// <exception cref="Exception">If there is any unvalid part.</exception>
+        public static async Task<AssSubtitleModel> ParseAssFile(string assFile)
+        {
+            using StreamReader assStream = new(File.Open(assFile, FileMode.Open));
+            return await ParseAssFile(assStream);
         }
     }
 }
