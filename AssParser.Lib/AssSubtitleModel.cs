@@ -10,6 +10,15 @@ namespace AssParser.Lib
         public Events Events { get; set; } = new();
         public List<string> Ord { get; set; } = new();
         public Dictionary<string, string> UnknownSections { get; set; } = new();
+        public override string ToString()
+        {
+            using MemoryStream stream = new();
+            using StreamWriter writer = new(stream, leaveOpen: true);
+            AssParser.WriteToStreamAsync(this, writer).Wait();
+            stream.Position = 0;
+            using StreamReader reader = new(stream, leaveOpen: true);
+            return reader.ReadToEnd();
+        }
     }
 
     public class ScriptInfo
@@ -18,7 +27,7 @@ namespace AssParser.Lib
         {
             SciptInfoItems = new();
         }
-        public SortedList<string, string?> SciptInfoItems;
+        public Dictionary<string, string?> SciptInfoItems;
         public string? Title
         {
             set
