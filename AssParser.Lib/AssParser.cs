@@ -43,7 +43,7 @@ namespace AssParser.Lib
                 }
                 if (tag is not ['[', .., ']'])
                 {
-                    throw new($"{tag} is not a valid section name");
+                    throw new AssParserException($"{tag} is not a valid section name", assStream, AssParserErrorType.InvalidSection);
                 }
                 assSubtitleModel.Ord.Add(tag);
                 switch (tag)
@@ -72,7 +72,7 @@ namespace AssParser.Lib
                         (header, body) = await ParseLine(assStream);
                         if (header != "Format")
                         {
-                            throw new("No format line");
+                            throw new AssParserException($"No format line", assStream, AssParserErrorType.MissingFormatLine);
                         }
                         assSubtitleModel.Styles.Format = body.Split(',');
                         for (int i = 0; i < assSubtitleModel.Styles.Format.Length; i++)
@@ -91,7 +91,7 @@ namespace AssParser.Lib
                             (header, body) = await ParseLine(assStream);
                             if (header != "Style")
                             {
-                                throw new("Wrong Style Line");
+                                throw new AssParserException($"Wrong Style Line", assStream, AssParserErrorType.InvalidStyleLine);
                             }
                             var data = body.Split(",");
                             Style style = new();
@@ -169,7 +169,7 @@ namespace AssParser.Lib
                                         style.Encoding = data[i];
                                         break;
                                     default:
-                                        throw new Exception("Invalid style");
+                                        throw new AssParserException($"Invalid style", assStream, AssParserErrorType.InvalidStyle);
                                 }
 
                             }
@@ -182,7 +182,7 @@ namespace AssParser.Lib
                         (header, body) = await ParseLine(assStream);
                         if (header != "Format")
                         {
-                            throw new("No format line");
+                            throw new AssParserException($"No format line", assStream, AssParserErrorType.MissingFormatLine);
                         }
                         assSubtitleModel.Events.Format = body.Split(',');
                         assSubtitleModel.Events.events = new();
@@ -211,7 +211,7 @@ namespace AssParser.Lib
                             }
                             else
                             {
-                                throw new Exception("Invalid event");
+                                throw new AssParserException($"Invalid event", assStream, AssParserErrorType.InvalidEvent);
                             }
                             var data = body.Split(",");
                             for (int i = 0; i < assSubtitleModel.Events.Format.Length; i++)
@@ -249,7 +249,7 @@ namespace AssParser.Lib
                                         events.Text = string.Join(',', data[i..]);
                                         break;
                                     default:
-                                        throw new Exception("Invalid event");
+                                        throw new AssParserException($"Invalid event", assStream, AssParserErrorType.InvalidEvent);
                                 }
                             }
                             assSubtitleModel.Events.events.Add(events);
@@ -385,7 +385,7 @@ namespace AssParser.Lib
                             await stream.WriteAsync(style.Encoding);
                             break;
                         default:
-                            throw new Exception("Invalid style");
+                            throw new Exception($"Invalid style {assSubtitleModel.Styles.Format[i]} in [V4+ Styles]");
                     }
                     if (i != assSubtitleModel.Styles.Format.Length - 1)
                     {
@@ -446,7 +446,7 @@ namespace AssParser.Lib
                             await stream.WriteAsync(item.Text);
                             break;
                         default:
-                            throw new Exception("Invalid event");
+                            throw new ($"Invalid style {assSubtitleModel.Events.Format[i]}");
                     }
                     if (i != assSubtitleModel.Events.Format.Length - 1)
                     {
