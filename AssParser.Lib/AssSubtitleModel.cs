@@ -185,6 +185,7 @@ namespace AssParser.Lib
         public string MarginR;
         public string MarginV;
         public string Encoding;
+        public int LineNumber;
     }
     public class Events
     {
@@ -204,6 +205,7 @@ namespace AssParser.Lib
         public string MarginV;
         public string Effect;
         public string Text;
+        public int LineNumber;
     }
 
     public enum EventType

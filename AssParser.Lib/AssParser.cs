@@ -190,6 +190,7 @@ namespace AssParser.Lib
                                 }
 
                             }
+                            style.LineNumber = lineCount;
                             assSubtitleModel.Styles.styles.Add(style);
                         }
                         break;
@@ -276,6 +277,7 @@ namespace AssParser.Lib
                                         throw new AssParserException($"Invalid event", assStream, eventLine, AssParserErrorType.InvalidEvent);
                                 }
                             }
+                            events.LineNumber = lineCount;
                             assSubtitleModel.Events.events.Add(events);
                         }
                         break;
