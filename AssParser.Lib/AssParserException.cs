@@ -10,32 +10,33 @@ namespace AssParser.Lib
     public class AssParserException : Exception
     {
         public StreamReader streamReader;
-        public long Position;
+        public int LineCount;
         public AssParserErrorType ErrorType;
-        public AssParserException(StreamReader streamReader, AssParserErrorType errorType)
+        public AssParserException(StreamReader streamReader, int lineCount, AssParserErrorType errorType)
         {
             this.streamReader = streamReader;
-            Position = streamReader.BaseStream.Position;
+            LineCount = lineCount;
             ErrorType = errorType;
         }
-        public AssParserException(string message, StreamReader streamReader, AssParserErrorType errorType) : base(message)
+        public AssParserException(string message, StreamReader streamReader, int lineCount, AssParserErrorType errorType) : base(message)
         {
+            streamReader.DiscardBufferedData();
             this.streamReader = streamReader;
-            Position = streamReader.BaseStream.Position;
+            LineCount = lineCount;
             ErrorType = errorType;
         }
-        public AssParserException(string message, Exception inner, StreamReader streamReader, AssParserErrorType errorType) : base(message, inner)
+        public AssParserException(string message, Exception inner, StreamReader streamReader, int lineCount, AssParserErrorType errorType) : base(message, inner)
         {
             this.streamReader = streamReader;
-            Position = streamReader.BaseStream.Position;
+            LineCount = lineCount;
             ErrorType = errorType;
         }
         protected AssParserException(
           System.Runtime.Serialization.SerializationInfo info,
-          System.Runtime.Serialization.StreamingContext context, StreamReader streamReader, AssParserErrorType errorType) : base(info, context)
+          System.Runtime.Serialization.StreamingContext context, StreamReader streamReader, int lineCount, AssParserErrorType errorType) : base(info, context)
         {
             this.streamReader = streamReader;
-            Position = streamReader.BaseStream.Position;
+            LineCount = lineCount;
             ErrorType = errorType;
         }
         /// <summary>
@@ -53,16 +54,15 @@ namespace AssParser.Lib
         /// <returns>Line number and the content of the line.The format is "Line XX : ********".</returns>
         public string? PrintErrorLine()
         {
+            streamReader.DiscardBufferedData();
             streamReader.BaseStream.Position = 0;
-            int LineCount = 0;
-            string? Line = "";
-            while (streamReader.BaseStream.Position < Position)
+            int i = 1;
+            while (i < LineCount)
             {
-                LineCount++;
-                Line = streamReader.ReadLine();
+                i++;
+                _ = streamReader.ReadLine();
             }
-            streamReader.BaseStream.Position = Position;
-            return $"Line {LineCount} : {Line}";
+            return $"Line {LineCount} : {streamReader.ReadLine()}";
         }
     }
     public enum AssParserErrorType
