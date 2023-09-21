@@ -39,6 +39,9 @@
     <None Update="AssParserTest\2.ass">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="AssParserTest\format_14.ass">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="UUEncodeTest\1.ass">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

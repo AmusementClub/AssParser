@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AssParser.Lib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,6 +38,21 @@ namespace AssParser.Test.AssParserTest
 
             //Assert
             Assert.Equal(source.Replace("\r\n", "\n").Replace("\n", "\r\n"), res.Replace("\r\n", "\n").Replace("\n", "\r\n"));
+        }
+        [Fact]
+        public async void AssParser_ShouldThrow_InvalidStyle()
+        {
+            //Arrange
+            var path = Path.Combine("AssParserTest", "format_14.ass");
+            using var sr = new StreamReader(File.OpenRead(path));
+
+            //Act
+            var act = () => Lib.AssParser.ParseAssFile(sr);
+
+            //Assert
+            var exception = await Assert.ThrowsAsync<AssParserException>(act);
+            Assert.Equal(14, exception?.LineCount);
+            Assert.Equal(AssParserErrorType.InvalidStyleLine, exception?.ErrorType);
         }
     }
 }
