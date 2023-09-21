@@ -186,7 +186,7 @@ namespace AssParser.Lib
                                         style.Encoding = data[i];
                                         break;
                                     default:
-                                        throw new AssParserException($"Invalid style", assStream, formatLine, AssParserErrorType.InvalidStyle);
+                                        throw new AssParserException($"Invalid style", assStream, formatLine, AssParserErrorType.InvalidStyleLine);
                                 }
 
                             }
