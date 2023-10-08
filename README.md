@@ -1,5 +1,4 @@
-# AssParser &middot; [![Publish to nuget](https://github.com/AmusementClub/AssParser/actions/workflows/dotnet-nuget.yml/badge.svg)](https://github.com/AmusementClub/AssParser/actions/workflows/dotnet-nuget.yml)![Nuget](https://img.shields.io/nuget/v/AssParser.Lib?logo=nuget)
- [![Test](https://github.com/AmusementClub/AssParser/actions/workflows/test.yml/badge.svg)](https://github.com/AmusementClub/AssParser/actions/workflows/test.yml)
+# AssParser &middot; [![Publish to nuget](https://github.com/AmusementClub/AssParser/actions/workflows/dotnet-nuget.yml/badge.svg)](https://github.com/AmusementClub/AssParser/actions/workflows/dotnet-nuget.yml) ![Nuget](https://img.shields.io/nuget/v/AssParser.Lib?logo=nuget)  [![Test](https://github.com/AmusementClub/AssParser/actions/workflows/test.yml/badge.svg)](https://github.com/AmusementClub/AssParser/actions/workflows/test.yml)
 
 Parse ASS(SubStation Alpha Subtitles) file faster. No Regex. All managed code.
 
