@@ -45,7 +45,8 @@ namespace AssParser.Lib
                 {
                     continue;
                 }
-                if (tag is not ['[', .., ']'])
+                //if (tag is not ['[', .., ']']) //.net 7+ only
+                if (!tag.StartsWith('[') || !tag.EndsWith(']'))
                 {
                     throw new AssParserException($"{tag} is not a valid section name", assStream, lineCount, AssParserErrorType.InvalidSection);
                 }
