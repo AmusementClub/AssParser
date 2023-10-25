@@ -1,6 +1,4 @@
 ﻿using AssParser.Lib;
-using BenchmarkDotNet.Running;
-using System.Text;
 
 namespace AssParser
 {

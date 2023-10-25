@@ -1,7 +1,4 @@
-﻿using System.Collections.Specialized;
-using System.Reflection.Metadata.Ecma335;
-
-namespace AssParser.Lib
+﻿namespace AssParser.Lib
 {
     public class AssSubtitleModel
     {

@@ -1,5 +1,5 @@
-using System.Text.RegularExpressions;
 using AssParser.Lib;
+using System.Text.RegularExpressions;
 using Xunit.Abstractions;
 
 namespace AssParser.Test.UUEncodeTest

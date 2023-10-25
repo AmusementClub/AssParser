@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Text;
+﻿using System.Text;
 
 namespace AssParser.Lib
 {
