@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AssParser": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

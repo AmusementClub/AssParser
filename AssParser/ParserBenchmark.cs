@@ -18,7 +18,7 @@ namespace AssParser
         [Benchmark]
         public void ParserBenchmarkTest()
         {
-            Lib.AssParser.ParseAssFile(@"[Nekomoe kissaten&VCB-Studio] Cider no You ni Kotoba ga Wakiagaru [Ma10p_1080p][x265_flac].jp&sc.ass").Wait();
+            Lib.AssParser.ParseAssFile(@"C:\Users\sunjialin\Desktop\test.ass").Wait();
         }
         [Benchmark]
         public void ParserBenchmarkTest2()
