@@ -26,7 +26,9 @@ namespace AssParser
                 //    }
                 //}
                 //fs.Close();
-                var assfile = Lib.AssParser.ParseAssFile(@"[Nekomoe kissaten&VCB-Studio] Cider no You ni Kotoba ga Wakiagaru [Ma10p_1080p][x265_flac].jp&sc.ass").Result;
+                //var assfile = Lib.AssParser.ParseAssFile(@"[Nekomoe kissaten&VCB-Studio] Cider no You ni Kotoba ga Wakiagaru [Ma10p_1080p][x265_flac].jp&sc.ass").Result;
+                using StreamReader assStream = new(File.Open(@"C:\Users\sunjialin\Desktop\test.ass", FileMode.Open));
+                Lib.AssParser.ParseAssFileSync(assStream);
                 //var fonts = assfile.UsedFonts();
                 //foreach (var font in fonts)
                 //{
@@ -54,7 +56,7 @@ namespace AssParser
 //#if !DEBUG
 //            var summary = BenchmarkRunner.Run<ParserBenchmark>();
 //#endif
-            //Console.ReadLine();
+//            Console.ReadLine();
         }
     }
 }

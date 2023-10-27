@@ -21,6 +21,12 @@ namespace AssParser
             Lib.AssParser.ParseAssFile(@"C:\Users\sunjialin\Desktop\test.ass").Wait();
         }
         [Benchmark]
+        public void ParserBenchmarkTestN()
+        {
+            using StreamReader assStream = new(File.Open(@"C:\Users\sunjialin\Desktop\test.ass", FileMode.Open));
+            Lib.AssParser.ParseAssFileSync(assStream);
+        }
+        [Benchmark]
         public void ParserBenchmarkTest2()
         {
             var fonts = assfile.UsedFonts();

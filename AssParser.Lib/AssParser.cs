@@ -23,6 +23,342 @@ namespace AssParser.Lib
                 return (header, "");
             }
         }
+        static (string header, string body) ParseLineSync(StreamReader streamReader)
+        {
+            var line = streamReader.ReadLine();
+            if (line == null)
+            {
+                return ("", "");
+            }
+            var i = line.IndexOf(':');
+            if(i == -1)
+            {
+                throw new AssParserException($"No header found at line {0}", streamReader, 0, AssParserErrorType.InvalidSection);
+            }
+           
+            if (line.Length > i)
+            {
+               
+                return (line[..i], line[(i + (line[i+1]==' '?2:1))..]);
+            }
+            else
+            {
+                return (line[..i], "");
+            }
+        }
+        public static AssSubtitleModel ParseAssFileSync(StreamReader assStream)
+        {
+            var lineCount = 0;
+            AssSubtitleModel assSubtitleModel = new();
+            string header;
+            string body;
+            while (assStream.Peek() > -1)
+            {
+                var tag = assStream.ReadLine();
+                lineCount++;
+                if (tag == null || tag.Length == 0)
+                {
+                    continue;
+                }
+                //if (tag is not ['[', .., ']']) //.net 7+ only
+                if (!tag.StartsWith('[') || !tag.EndsWith(']'))
+                {
+                    throw new AssParserException($"{tag} is not a valid section name", assStream, lineCount, AssParserErrorType.InvalidSection);
+                }
+                assSubtitleModel.Ord.Add(tag);
+                switch (tag)
+                {
+                    case "[Script Info]":
+                        int commentCount = 0;
+                        while (assStream.Peek() is not '[' and > -1)
+                        {
+                            if (assStream.Peek() is '\r' or '\n')
+                            {
+                                if (assStream.Peek() is '\n')
+                                {
+                                    lineCount++;
+                                }
+                                assStream.Read();
+                                continue;
+                            }
+                            if (assStream.Peek() == ';')
+                            {
+                                assSubtitleModel.ScriptInfo.SciptInfoItems.Add($";{commentCount++}", assStream.ReadLine());
+                                lineCount++;
+                                continue;
+                            }
+                            (header, body) = ParseLineSync(assStream);
+                            lineCount++;
+                            assSubtitleModel.ScriptInfo.SciptInfoItems.Add(header, body);
+                        }
+                        break;
+                    case "[V4+ Styles]":
+                        //[V4+ Styles]
+                        //Read format line
+                        (header, body) = ParseLineSync(assStream);
+                        lineCount++;
+                        var formatLine = lineCount;
+                        if (header != "Format")
+                        {
+                            throw new AssParserException($"No format line", assStream, formatLine, AssParserErrorType.MissingFormatLine);
+                        }
+                        assSubtitleModel.Styles.Format = body.Split(',');
+                        for (int i = 0; i < assSubtitleModel.Styles.Format.Length; i++)
+                        {
+                            assSubtitleModel.Styles.Format[i] = assSubtitleModel.Styles.Format[i].Trim();
+                        }
+                        assSubtitleModel.Styles.styles = new();
+                        //Read sytle lines
+                        while (assStream.Peek() is not '[' and > -1)
+                        {
+                            if (assStream.Peek() is '\r' or '\n')
+                            {
+                                if (assStream.Peek() is '\n')
+                                {
+                                    lineCount++;
+                                }
+                                assStream.Read();
+                                continue;
+                            }
+                            (header, body) = ParseLineSync(assStream);
+                            lineCount++;
+                            if (header != "Style")
+                            {
+                                throw new AssParserException($"Wrong Style Line", assStream, lineCount, AssParserErrorType.InvalidStyleLine);
+                            }
+                            var data = body.Split(",");
+                            Style style = new();
+                            for (int i = 0; i < assSubtitleModel.Styles.Format.Length; i++)
+                            {
+                                switch (assSubtitleModel.Styles.Format[i])
+                                {
+                                    case "Name":
+                                        style.Name = data[i];
+                                        break;
+                                    case "Fontname":
+                                        style.Fontname = data[i];
+                                        break;
+                                    case "Fontsize":
+                                        style.Fontsize = data[i];
+                                        break;
+                                    case "PrimaryColour":
+                                        style.PrimaryColour = data[i];
+                                        break;
+                                    case "SecondaryColour":
+                                        style.SecondaryColour = data[i];
+                                        break;
+                                    case "OutlineColour":
+                                        style.OutlineColour = data[i];
+                                        break;
+                                    case "BackColour":
+                                        style.BackColour = data[i];
+                                        break;
+                                    case "Bold":
+                                        style.Bold = data[i];
+                                        break;
+                                    case "Italic":
+                                        style.Italic = data[i];
+                                        break;
+                                    case "Underline":
+                                        style.Underline = data[i];
+                                        break;
+                                    case "StrikeOut":
+                                        style.StrikeOut = data[i];
+                                        break;
+                                    case "ScaleX":
+                                        style.ScaleX = data[i];
+                                        break;
+                                    case "ScaleY":
+                                        style.ScaleY = data[i];
+                                        break;
+                                    case "Spacing":
+                                        style.Spacing = data[i];
+                                        break;
+                                    case "Angle":
+                                        style.Angle = data[i];
+                                        break;
+                                    case "BorderStyle":
+                                        style.BorderStyle = data[i];
+                                        break;
+                                    case "Outline":
+                                        style.Outline = data[i];
+                                        break;
+                                    case "Shadow":
+                                        style.Shadow = data[i];
+                                        break;
+                                    case "Alignment":
+                                        style.Alignment = data[i];
+                                        break;
+                                    case "MarginL":
+                                        style.MarginL = data[i];
+                                        break;
+                                    case "MarginR":
+                                        style.MarginR = data[i];
+                                        break;
+                                    case "MarginV":
+                                        style.MarginV = data[i];
+                                        break;
+                                    case "Encoding":
+                                        style.Encoding = data[i];
+                                        break;
+                                    default:
+                                        throw new AssParserException($"Invalid style", assStream, formatLine, AssParserErrorType.InvalidStyleLine);
+                                }
+
+                            }
+                            style.LineNumber = lineCount;
+                            assSubtitleModel.Styles.styles.Add(style);
+                        }
+                        break;
+                    case "[Events]":
+                        //Read Events
+                        //Read format line
+                        (header, body) = ParseLineSync(assStream);
+                        lineCount++;
+                        var eventLine = lineCount;
+                        if (header != "Format")
+                        {
+                            throw new AssParserException($"No format line", assStream, eventLine, AssParserErrorType.MissingFormatLine);
+                        }
+                        assSubtitleModel.Events.Format = body.Split(',');
+                        assSubtitleModel.Events.events = new();
+                        for (int i = 0; i < assSubtitleModel.Events.Format.Length; i++)
+                        {
+
+                            assSubtitleModel.Events.Format[i] = assSubtitleModel.Events.Format[i].Trim();
+                        }
+
+                        while (assStream.Peek() is not '[' and > -1)
+                        {
+                            if (assStream.Peek() is '\r' or '\n')
+                            {
+                                if (assStream.Peek() is '\n')
+                                {
+                                    lineCount++;
+                                }
+                                assStream.Read();
+                                continue;
+                            }
+                            Event events = new();
+                            (header, body) = ParseLineSync(assStream);
+                            lineCount++;
+                            if (header == "Comment")
+                            {
+                                events.Type = EventType.Comment;
+                            }
+                            else if (header == "Dialogue")
+                            {
+                                events.Type = EventType.Dialogue;
+                            }
+                            else
+                            {
+                                throw new AssParserException($"Invalid event", assStream, lineCount, AssParserErrorType.InvalidEvent);
+                            }
+                            //StringBuilder buffer = new();
+                            //int i = 0;
+                            //foreach (var c in body)
+                            //{
+                            //    if((i> assSubtitleModel.Events.Format.Length-2 ) || c is not ',')
+                            //    {
+                            //        buffer.Append(c);
+                            //    }
+                            //    else
+                            //    {
+                            //        var data = buffer.ToString();
+                            //        buffer.Clear();
+                            //        switch (assSubtitleModel.Events.Format[i])
+                            //        {
+                            //            case "Layer":
+                            //                events.Layer = data;
+                            //                break;
+                            //            case "Start":
+                            //                events.Start = data;
+                            //                break;
+                            //            case "End":
+                            //                events.End = data;
+                            //                break;
+                            //            case "Style":
+                            //                events.Style = data;
+                            //                break;
+                            //            case "Name":
+                            //                events.Name = data;
+                            //                break;
+                            //            case "MarginL":
+                            //                events.MarginL = data;
+                            //                break;
+                            //            case "MarginR":
+                            //                events.MarginR = data;
+                            //                break;
+                            //            case "MarginV":
+                            //                events.MarginV = data;
+                            //                break;
+                            //            case "Effect":
+                            //                events.Effect = data;
+                            //                break;
+                            //            default:
+                            //                throw new AssParserException($"Invalid event", assStream, eventLine, AssParserErrorType.InvalidEvent);
+                            //        }
+                            //        i++;
+                            //        continue;
+                            //    }
+                            //}
+                            //events.Text = buffer.ToString();
+                            var data = body.Split(",");
+                            for (int i = 0; i < assSubtitleModel.Events.Format.Length; i++)
+                            {
+                                switch (assSubtitleModel.Events.Format[i])
+                                {
+                                    case "Layer":
+                                        events.Layer = data[i];
+                                        break;
+                                    case "Start":
+                                        events.Start = data[i];
+                                        break;
+                                    case "End":
+                                        events.End = data[i];
+                                        break;
+                                    case "Style":
+                                        events.Style = data[i];
+                                        break;
+                                    case "Name":
+                                        events.Name = data[i];
+                                        break;
+                                    case "MarginL":
+                                        events.MarginL = data[i];
+                                        break;
+                                    case "MarginR":
+                                        events.MarginR = data[i];
+                                        break;
+                                    case "MarginV":
+                                        events.MarginV = data[i];
+                                        break;
+                                    case "Effect":
+                                        events.Effect = data[i];
+                                        break;
+                                    case "Text":
+                                        events.Text = string.Join(',', data[i..]);
+                                        break;
+                                    default:
+                                        throw new AssParserException($"Invalid event", assStream, eventLine, AssParserErrorType.InvalidEvent);
+                                }
+                            }
+                            events.LineNumber = lineCount;
+                            assSubtitleModel.Events.events.Add(events);
+                        }
+                        break;
+                    default:
+                        StringBuilder BodyBuffer = new();
+                        while (assStream.Peek() is not '\r' and not '\n' and > -1)
+                        {
+                            BodyBuffer.AppendLine(assStream.ReadLine());
+                            lineCount++;
+                        }
+                        assSubtitleModel.UnknownSections.Add(tag, BodyBuffer.ToString());
+                        break;
+                }
+            }
+            return assSubtitleModel;
+        }
         /// <summary>
         /// Parse a single ass file asynchronously.
         /// </summary>
